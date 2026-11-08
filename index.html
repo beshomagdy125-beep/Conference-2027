@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Conference App</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;500;600&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root{--bg:#f5f2ec;--card:#fff;--ink:#1a2238;--mute:#6b7285;--lapis:#16295a;--gold:#c79a3b;--red:#a31f34;--line:#e3ddd0;--onl:#fff;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1630;--card:#172447;--ink:#eee9dc;--mute:#9aa3bd;--lapis:#0a1230;--line:#2a3a68;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1630;--card:#172447;--ink:#eee9dc;--mute:#9aa3bd;--lapis:#0a1230;--line:#2a3a68;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif;padding-bottom:84px}
+h1,h2,h3,.cin{font-family:Cinzel,Georgia,serif;letter-spacing:.02em}
+.wrap{max-width:560px;margin:0 auto;padding:0 16px}
+.hero{background:var(--lapis) center/cover;color:#fff;padding:34px 20px 28px;text-align:center;border-bottom:3px solid var(--gold);position:relative}
+.hero.ph::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,18,48,.35),rgba(10,18,48,.85))}
+.hero>*{position:relative}.hero svg{width:54px;height:54px}
+.hero h1{font-size:25px;margin:10px 0 4px;line-height:1.2}.hero p{margin:0;color:#e5d6ad;font-size:14px}
+.bar{background:var(--lapis);color:#fff;padding:14px 16px;padding-inline-end:100px;border-bottom:3px solid var(--gold);display:flex;align-items:center;gap:10px}
+.bar svg{width:26px;height:26px}.bar h2{margin:0;font-size:16px}
+h3{font-size:15px;margin:22px 0 10px;color:var(--lapis)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) h3{color:var(--gold)}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0}
+.live{border-inline-start:5px solid var(--red)}
+.badge{display:inline-block;background:var(--red);color:#fff;font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.mute{color:var(--mute);font-size:13px}
+.row{display:flex;gap:12px;align-items:flex-start}.time{min-width:62px;font-weight:600;color:var(--lapis)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .time{color:var(--gold)}}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:14px 0 4px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:7px 16px;font:inherit;font-weight:500;white-space:nowrap}
+.chip.on{background:var(--lapis);color:#fff;border-color:var(--gold)}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+.btn{background:var(--lapis);color:#fff;border:0;border-radius:10px;padding:10px 16px;font-weight:600}
+.btn.gold{background:var(--gold);color:#1a2238}.btn.red{background:var(--red)}.btn.ghost{background:none;color:var(--lapis);border:1px solid var(--line)}
+.btn.sm{padding:5px 10px;font-size:13px}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn.ghost{color:var(--ink)}}
+input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;margin:4px 0 10px}
+label{font-size:13px;color:var(--mute)}.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--gold);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+.tabs button{flex:1;background:none;border:0;color:var(--mute);padding:6px 2px;font-size:12px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tabs button.on{color:var(--red);font-weight:600}.tabs span{font-size:20px;line-height:1}
+.qr{background:#fff;padding:14px;border-radius:14px;width:232px;margin:14px auto;border:2px solid var(--gold)}.qr svg{width:100%;height:auto;display:block}
+.code{font:600 22px Cinzel,serif;text-align:center;letter-spacing:.25em}
+.bars{height:10px;border-radius:9px;background:var(--line);overflow:hidden;margin-top:8px}.bars i{display:block;height:100%}
+.score{font:700 28px Cinzel,serif}.sub{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 2px}
+.sub .chip{padding:5px 12px;font-size:13px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:var(--lapis);color:#fff;padding:10px 18px;border-radius:12px;z-index:9;border:1px solid var(--gold);max-width:90%}
+.sw{width:34px;height:34px;padding:0;border:0;margin:0}.tm{display:grid;grid-template-columns:34px 1fr 1fr auto;gap:8px;align-items:center;margin:6px 0}.tm input{margin:0}
+#reader{width:100%;border-radius:12px;overflow:hidden}:lang(ar) body,:lang(ar) button,:lang(ar) input,:lang(ar) select,:lang(ar) textarea{font-family:Cairo,Inter,system-ui,sans-serif}:lang(ar) h1,:lang(ar) h2,:lang(ar) h3,:lang(ar) .cin,:lang(ar) .score,:lang(ar) .code{font-family:Cairo,Georgia,serif;letter-spacing:0}.lang{position:absolute;top:calc(8px + env(safe-area-inset-top,0px));inset-inline-end:10px;z-index:6;background:#0007;color:#fff;border:1px solid var(--gold);border-radius:99px;padding:4px 12px;font-size:13px}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><symbol id="cx" viewBox="0 0 100 100"><path d="M41 9h18v32h32v18H59v32H41V59H9V41h32z" fill="#c79a3b"/><circle cx="50" cy="50" r="11" fill="none" stroke="#16295a" stroke-width="3"/><g fill="#c79a3b"><circle cx="50" cy="5" r="4"/><circle cx="50" cy="95" r="4"/><circle cx="5" cy="50" r="4"/><circle cx="95" cy="50" r="4"/></g></symbol></svg>
+<div id="app"></div><div id="toastbox"></div>
+<script>
+var KEY="coptic-conf-v2",MEKEY="coptic-conf-me",PIN_DEFAULT="1234";
+function def(){return{conf:{name:"Youth Conference 2026",sub:"Coptic Orthodox Church",nameAr:"مؤتمر الشباب ٢٠٢٦",subAr:"الكنيسة القبطية الأرثوذكسية",photo:"",days:3,live:""},
+teams:[{id:"t1",name:"St. Mark",nameAr:"القديس مرقس",color:"#a31f34"},{id:"t2",name:"St. Mina",nameAr:"القديس مينا",color:"#c79a3b"},{id:"t3",name:"St. Antony",nameAr:"القديس أنطونيوس",color:"#2f7d62"},{id:"t4",name:"St. Mary",nameAr:"العذراء مريم",color:"#3b5bb5"}],
+events:[{id:"e1",day:1,start:"09:00",end:"10:00",title:"Opening Prayer & Welcome",titleAr:"الصلاة الافتتاحية والترحيب",loc:"Main Church",locAr:"الكنيسة الرئيسية"},{id:"e2",day:1,start:"10:30",end:"12:00",title:"Session 1: Faith in Daily Life",titleAr:"الجلسة الأولى: الإيمان في الحياة اليومية",loc:"Hall A",locAr:"القاعة أ"},{id:"e3",day:1,start:"16:00",end:"17:30",title:"Team Games",titleAr:"ألعاب الفِرق",loc:"Courtyard",locAr:"الفناء"},{id:"e4",day:2,start:"09:30",end:"11:00",title:"Bible Study Workshops",titleAr:"ورش دراسة الكتاب المقدس",loc:"Classrooms",locAr:"الفصول"},{id:"e5",day:2,start:"18:00",end:"19:30",title:"Vespers & Hymns",titleAr:"صلاة الغروب والألحان",loc:"Main Church",locAr:"الكنيسة الرئيسية"},{id:"e6",day:3,start:"10:00",end:"12:30",title:"Divine Liturgy",titleAr:"القداس الإلهي",loc:"Main Church",locAr:"الكنيسة الرئيسية"}],
+scores:[{id:"s1",team:"t1",ev:"e3",pts:30},{id:"s2",team:"t2",ev:"e3",pts:20},{id:"s3",team:"t3",ev:"e3",pts:25}],
+news:[{id:"n1",title:"Welcome!",titleAr:"أهلاً بكم!",msg:"Check the schedule and register your attendance at each session.",msgAr:"تابعوا البرنامج وسجّلوا حضوركم في كل جلسة.",t:Date.now()}],
+att:[],people:{}}}
+var lang=(function(){try{return localStorage.getItem("coptic-conf-lang")||((navigator.language||"").indexOf("ar")===0?"ar":"en")}catch(e){return"en"}})(),S,me=null,view="home",day=1,adm=false,sub="sched",edit=null,scanner=null;
+function load(){S=def();try{me=JSON.parse(localStorage.getItem(MEKEY))}catch(e){me=null}}
+function save(){if(adm)DB.setCfg({conf:S.conf,teams:S.teams,events:S.events,scores:S.scores,news:S.news}).catch(function(e){toast("Could not save: "+e.code)});render()}
+function saveMe(){try{localStorage.setItem(MEKEY,JSON.stringify(me))}catch(e){}}
+
+var AR={"Coordinator sign-in":"دخول المنسق","Email":"البريد الإلكتروني","Password":"كلمة المرور","Sign in":"دخول","Wrong email or password":"البريد أو كلمة المرور غير صحيحة","Welcome,":"أهلاً،","Happening now":"يحدث الآن","No session is live right now.":"لا توجد جلسة مباشرة الآن.","Up next":"التالي","Announcements":"الإعلانات","No announcements yet.":"لا توجد إعلانات بعد.","Turn on notifications":"تفعيل الإشعارات","LIVE":"مباشر","Schedule":"البرنامج","Nothing scheduled for this day yet.":"لا يوجد شيء في هذا اليوم بعد.","My attendance":"حضوري","Attendance":"الحضور","There is no live session. When one starts, your check-in code will appear here.":"لا توجد جلسة مباشرة. عند بدء جلسة سيظهر رمز حضورك هنا.","You’re checked in":"تم تسجيل حضورك","Show this code to a coordinator to sign your attendance.":"أظهر هذا الرمز للمنسق لتسجيل حضورك.","Scores":"النتائج","Live scoreboard":"لوحة النتائج المباشرة","Points by event":"النقاط حسب الفعالية","Register to join":"سجّل للانضمام","Your name":"اسمك","Your team":"فريقك","Join the conference":"انضم إلى المؤتمر","Coordinator login":"دخول المنسق","Full name":"الاسم الكامل","Home":"الرئيسية","Attend":"الحضور","Admin":"الإدارة","Coordinator":"المنسق","Enter coordinator PIN":"أدخل الرقم السري للمنسق","PIN":"الرقم السري","Unlock":"فتح","Demo PIN: 1234. Change it in Settings.":"الرقم التجريبي: 1234. غيّره من الإعدادات.","Lock":"قفل","Alerts":"التنبيهات","Check-in":"تسجيل الحضور","Settings":"الإعدادات","Edit session":"تعديل الجلسة","Add a session":"إضافة جلسة","Day":"اليوم","Location":"المكان","Start":"البداية","End":"النهاية","Title":"العنوان","Title (Arabic)":"العنوان (بالعربية)","Location (Arabic)":"المكان (بالعربية)","Message (Arabic)":"الرسالة (بالعربية)","Save changes":"حفظ التغييرات","Add session":"إضافة الجلسة","Cancel":"إلغاء","End live":"إنهاء البث","Go live":"ابدأ الآن","Edit":"تعديل","Delete":"حذف","Add points":"إضافة نقاط","Event":"الفعالية","Team":"الفريق","Points (negative to deduct)":"النقاط (سالب للخصم)","History":"السجل","Remove":"إزالة","Send an alert to everyone":"إرسال تنبيه للجميع","Message":"الرسالة","Send alert":"إرسال التنبيه","e.g. Lunch is ready":"مثال: الغداء جاهز","No live session":"لا توجد جلسة مباشرة","Set a session live in the Schedule tab first.":"ابدأ جلسة من تبويب البرنامج أولاً.","Checked in:":"تم تسجيل:","Scan attendee QR":"مسح رمز الحضور","Stop scanner":"إيقاف الماسح","No camera? Type the attendee code":"لا توجد كاميرا؟ اكتب رمز الحاضر","Attendee code":"رمز الحاضر","Check in":"تسجيل","Checked in":"تم تسجيلهم","Nobody yet.":"لا أحد بعد.","Conference identity":"هوية المؤتمر","Name":"الاسم","Subtitle":"العنوان الفرعي","Name (Arabic)":"الاسم (بالعربية)","Subtitle (Arabic)":"العنوان الفرعي (بالعربية)","Cover photo":"صورة الغلاف","Remove photo":"إزالة الصورة","Number of days":"عدد الأيام","Coordinator PIN":"الرقم السري للمنسق","Teams":"الفِرق","Add team":"إضافة فريق","Arabic name":"الاسم بالعربية","Reset demo data":"إعادة ضبط البيانات التجريبية","Please enter your name":"من فضلك اكتب اسمك","Wrong PIN":"الرقم السري غير صحيح","Add a title":"أضف عنواناً","Points added":"تمت إضافة النقاط","Enter points":"أدخل النقاط","Alert sent":"تم إرسال التنبيه","Saved":"تم الحفظ","Not a valid code":"الرمز غير صالح","Session not found":"الجلسة غير موجودة","Unknown attendee code":"رمز حاضر غير معروف","Camera unavailable. Use the code box instead.":"الكاميرا غير متاحة. استخدم خانة الرمز.","Scanner not available here":"الماسح غير متاح هنا","Keep at least one team":"يجب أن يبقى فريق واحد على الأقل","Storage full: use a smaller photo":"الذاكرة ممتلئة: استخدم صورة أصغر","Delete this session?":"حذف هذه الجلسة؟","Reset everything to the demo data?":"إعادة ضبط كل شيء إلى البيانات التجريبية؟"};
+var PRE={"· Team ":"· فريق ","Thank you, ":"شكراً، ","New alert: ":"تنبيه جديد: "},SUF={" is already checked in":" مسجَّل حضوره مسبقاً"," checked in":" تم تسجيل حضوره"};
+function tr(s){if(lang!=="ar")return s;var k=s.trim();if(AR[k])return s.replace(k,AR[k]);var m=k.match(/^Day (\d+)/);if(m)return s.replace(m[0],"اليوم "+m[1]);for(var p in PRE)if(k.indexOf(p)===0)return s.replace(p,PRE[p]);for(var q in SUF)if(k.length>q.length&&k.slice(-q.length)===q)return s.replace(q,SUF[q]);return s}
+function nm(o,f){return(lang==="ar"&&o[f+"Ar"])?o[f+"Ar"]:o[f]}
+function dec(s){try{return decodeURIComponent(s)}catch(e){return s}}
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr";if(lang!=="ar")return;var w=document.createTreeWalker($("#app"),NodeFilter.SHOW_TEXT),n,v;while(n=w.nextNode()){v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v}document.querySelectorAll("#app [placeholder]").forEach(function(i){i.placeholder=tr(i.placeholder)})}
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function uid(p){return p+Math.random().toString(36).slice(2,8)}
+function toast(m){var b=$("#toastbox");b.innerHTML='<div class="toast">'+esc(tr(m))+'</div>';setTimeout(function(){b.innerHTML=""},2600)}
+function notify(n){toast("New alert: "+nm(n,"title"));try{if(window.Notification&&Notification.permission==="granted")new Notification(nm(n,"title"),{body:nm(n,"msg")})}catch(e){}}
+function ev(id){return S.events.filter(function(e){return e.id===id})[0]}
+function team(id){var t=S.teams.filter(function(t){return t.id===id})[0]||{name:"-",color:"#888"};return{name:nm(t,"name"),color:t.color}}
+function sorted(){return S.events.slice().sort(function(a,b){return a.day-b.day||a.start.localeCompare(b.start)})}
+function total(tid){return S.scores.filter(function(s){return s.team===tid}).reduce(function(a,s){return a+Number(s.pts)},0)}
+function nextEv(){var l=sorted(),i=l.findIndex(function(e){return e.id===S.conf.live});return i>=0?l[i+1]:l[0]}
+function cross(){return '<svg><use href="#cx"/></svg>'}
+function qrsvg(t){var q=qrcode(0,"M");q.addData(t);q.make();return q.createSvgTag({cellSize:4,margin:0,scalable:true})}
+function evCard(e){var l=S.conf.live===e.id;return '<div class="card row'+(l?' live':'')+'"><div class="time">'+esc(e.start)+'<div class="mute">'+esc(e.end)+'</div></div><div style="flex:1"><b>'+esc(nm(e,"title"))+'</b> '+(l?'<span class="badge">LIVE</span>':'')+'<div class="mute">'+esc(nm(e,"loc"))+'</div></div></div>'}
+
+/* ---------- attendee views ---------- */
+function vHome(){var h=S.conf.photo?'<div class="hero ph" style="background-image:url('+S.conf.photo+')">':'<div class="hero">',l=ev(S.conf.live),n=nextEv();
+var o=h+cross()+'<h1>'+esc(nm(S.conf,"name"))+'</h1><p>'+esc(nm(S.conf,"sub"))+'</p></div><div class="wrap">';
+if(me)o+='<p class="mute" style="margin:14px 0 0">Welcome, <b>'+esc(me.name)+'</b> · Team '+esc(team(me.team).name)+'</p>';
+o+='<h3>Happening now</h3>'+(l?evCard(l):'<div class="card mute">No session is live right now.</div>');
+if(n)o+='<h3>Up next</h3>'+evCard(n);
+o+='<h3>Announcements</h3>'+(S.news.map(function(a){return '<div class="card"><b>'+esc(nm(a,"title"))+'</b><div>'+esc(nm(a,"msg"))+'</div><div class="mute">'+new Date(a.t).toLocaleString(lang==="ar"?"ar-EG":"en",{weekday:"short",hour:"2-digit",minute:"2-digit"})+'</div></div>'}).join("")||'<div class="card mute">No announcements yet.</div>');
+if(window.Notification&&Notification.permission==="default")o+='<p><button class="btn ghost" data-a="perm">Turn on notifications</button></p>';
+return o+'</div>'}
+function vSched(){var o='<div class="wrap"><div class="chips">';
+for(var d=1;d<=S.conf.days;d++)o+='<button class="chip'+(d===day?' on':'')+'" data-a="day" data-v="'+d+'">Day '+d+'</button>';
+var l=sorted().filter(function(e){return e.day===day});
+return o+'</div>'+(l.map(evCard).join("")||'<div class="card mute">Nothing scheduled for this day yet.</div>')+'</div>'}
+function vAttend(){var l=ev(S.conf.live),o='<div class="wrap">';
+if(!l)return o+'<h3>Attendance</h3><div class="card mute">There is no live session. When one starts, your check-in code will appear here.</div></div>';
+var done=S.att.some(function(a){return a.p===me.id&&a.e===l.id});
+o+='<h3>'+esc(nm(l,"title"))+'</h3><div class="mute">'+esc(l.start)+' – '+esc(l.end)+' · '+esc(nm(l,"loc"))+'</div>';
+if(done)return o+'<div class="card" style="text-align:center"><div style="font-size:42px">✅</div><b>You’re checked in</b><div class="mute">Thank you, '+esc(me.name)+'.</div></div></div>';
+return o+'<p class="mute">Show this code to a coordinator to sign your attendance.</p><div class="qr">'+qrsvg(me.id+"|"+l.id+"|"+encodeURIComponent(me.name)+"|"+me.team)+'</div><div class="code">'+esc(me.id)+'</div></div>'}
+function vScores(){var ts=S.teams.slice().sort(function(a,b){return total(b.id)-total(a.id)}),mx=Math.max(1,total(ts[0].id)),o='<div class="wrap"><h3>Live scoreboard</h3>';
+ts.forEach(function(t,i){o+='<div class="card"><div class="row"><span class="cin" style="font-size:20px;color:var(--gold)">'+(i+1)+'</span><b style="flex:1">'+esc(nm(t,"name"))+'</b><span class="score">'+total(t.id)+'</span></div><div class="bars"><i style="width:'+Math.max(2,total(t.id)/mx*100)+'%;background:'+t.color+'"></i></div></div>'});
+o+='<h3>Points by event</h3>';
+S.events.forEach(function(e){var r=S.scores.filter(function(s){return s.ev===e.id});if(r.length)o+='<div class="card"><b>'+esc(nm(e,"title"))+'</b><div class="sub">'+r.map(function(s){return '<span class="chip" style="border-color:'+team(s.team).color+'">'+esc(team(s.team).name)+' '+(s.pts>0?'+':'')+s.pts+'</span>'}).join("")+'</div></div>'});
+return o+'</div>'}
+function vReg(){var o='<div class="hero">'+cross()+'<h1>'+esc(nm(S.conf,"name"))+'</h1><p>'+esc(nm(S.conf,"sub"))+'</p></div><div class="wrap"><h3>Register to join</h3><label>Your name</label><input id="rn" placeholder="Full name"><label>Your team</label><select id="rt">'+S.teams.map(function(t){return '<option value="'+t.id+'">'+esc(nm(t,"name"))+'</option>'}).join("")+'</select><button class="btn gold" data-a="reg" style="width:100%">Join the conference</button></div>';return o}
+
+/* ---------- coordinator ---------- */
+function vAdmin(){
+if(!adm)return '<div class="bar">'+cross()+'<h2>Coordinator</h2></div><div class="wrap"><h3>Coordinator sign-in</h3><label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password"><button class="btn" data-a="login" style="width:100%">Sign in</button></div>';
+var tabs=[["sched","Schedule"],["score","Scores"],["news","Alerts"],["scan","Check-in"],["set","Settings"]];
+var o='<div class="bar">'+cross()+'<h2 style="flex:1">Coordinator</h2><button class="btn sm ghost" style="color:#fff;border-color:#fff3" data-a="logout">Lock</button></div><div class="wrap"><div class="chips">'+tabs.map(function(t){return '<button class="chip'+(sub===t[0]?' on':'')+'" data-a="sub" data-v="'+t[0]+'">'+t[1]+'</button>'}).join("")+'</div>';
+return o+({sched:aSched,score:aScore,news:aNews,scan:aScan,set:aSet}[sub])()+'</div>'}
+function aSched(){var e=edit?ev(edit):null||{},o='<div class="card"><b>'+(edit?'Edit session':'Add a session')+'</b><div class="g2"><div><label>Day</label><input id="f_day" type="number" min="1" max="'+S.conf.days+'" value="'+(e.day||day)+'"></div><div><label>Location</label><input id="f_loc" value="'+esc(e.loc||"")+'"></div><div><label>Start</label><input id="f_s" type="time" value="'+(e.start||"09:00")+'"></div><div><label>End</label><input id="f_e" type="time" value="'+(e.end||"10:00")+'"></div></div><label>Title</label><input id="f_t" value="'+esc(e.title||"")+'"><label>Title (Arabic)</label><input id="f_ta" dir="rtl" value="'+esc(e.titleAr||"")+'"><label>Location (Arabic)</label><input id="f_la" dir="rtl" value="'+esc(e.locAr||"")+'"><button class="btn" data-a="saveev">'+(edit?'Save changes':'Add session')+'</button> '+(edit?'<button class="btn ghost" data-a="canc">Cancel</button>':'')+'</div>';
+sorted().forEach(function(x){var l=S.conf.live===x.id;o+='<div class="card"><b>Day '+x.day+' · '+esc(x.start)+' – '+esc(x.title)+'</b>'+(l?' <span class="badge">LIVE</span>':'')+'<div class="sub"><button class="btn sm '+(l?'red':'gold')+'" data-a="live" data-v="'+x.id+'">'+(l?'End live':'Go live')+'</button><button class="btn sm ghost" data-a="ed" data-v="'+x.id+'">Edit</button><button class="btn sm ghost" data-a="del" data-v="'+x.id+'">Delete</button></div></div>'});return o}
+function aScore(){var o='<div class="card"><b>Add points</b><label>Event</label><select id="p_e">'+sorted().map(function(e){return '<option value="'+e.id+'"'+(e.id===S.conf.live?' selected':'')+'>Day '+e.day+' – '+esc(e.title)+'</option>'}).join("")+'</select><div class="g2"><div><label>Team</label><select id="p_t">'+S.teams.map(function(t){return '<option value="'+t.id+'">'+esc(t.name)+'</option>'}).join("")+'</select></div><div><label>Points (negative to deduct)</label><input id="p_p" type="number" value="10"></div></div><button class="btn gold" data-a="addpts">Add points</button></div><h3>History</h3>';
+S.scores.slice().reverse().forEach(function(s){var e=ev(s.ev);o+='<div class="card row"><div style="flex:1"><b>'+esc(team(s.team).name)+' '+(s.pts>0?'+':'')+s.pts+'</b><div class="mute">'+esc(e?e.title:"")+'</div></div><button class="btn sm ghost" data-a="delpts" data-v="'+s.id+'">Remove</button></div>'});return o}
+function aNews(){var o='<div class="card"><b>Send an alert to everyone</b><label>Title</label><input id="n_t" placeholder="e.g. Lunch is ready"><label>Message</label><textarea id="n_m" rows="3"></textarea><label>Title (Arabic)</label><input id="n_ta" dir="rtl"><label>Message (Arabic)</label><textarea id="n_ma" rows="3" dir="rtl"></textarea><button class="btn" data-a="send">Send alert</button></div>';
+S.news.forEach(function(a){o+='<div class="card row"><div style="flex:1"><b>'+esc(a.title)+'</b><div>'+esc(a.msg)+'</div></div><button class="btn sm ghost" data-a="deln" data-v="'+a.id+'">Delete</button></div>'});return o}
+function aScan(){var l=ev(S.conf.live),n=l?S.att.filter(function(a){return a.e===l.id}):[];
+var o='<div class="card"><b>'+(l?esc(nm(l,"title")):'No live session')+'</b><div class="mute">'+(l?'Checked in: <span id="cnt">'+n.length+'</span>':'Set a session live in the Schedule tab first.')+'</div></div>';
+if(!l)return o;
+o+='<div class="card"><div id="reader"></div><button class="btn" data-a="scan" style="margin-top:10px">'+(scanner?'Stop scanner':'Scan attendee QR')+'</button></div><div class="card"><label>No camera? Type the attendee code</label><input id="mc" placeholder="Attendee code" style="text-transform:uppercase"><button class="btn ghost" data-a="manual">Check in</button></div><h3>Checked in</h3>';
+return o+(n.map(function(a){var p=S.people[a.p]||{name:a.p};return '<div class="card row"><b style="flex:1">'+esc(p.name)+'</b><span class="mute">'+esc(team(p.team).name)+'</span></div>'}).join("")||'<div class="card mute">Nobody yet.</div>')}
+function aSet(){var o='<div class="card"><b>Conference identity</b><label>Name</label><input data-k="name" value="'+esc(S.conf.name)+'"><label>Subtitle</label><input data-k="sub" value="'+esc(S.conf.sub)+'"><label>Name (Arabic)</label><input dir="rtl" data-k="nameAr" value="'+esc(S.conf.nameAr||"")+'"><label>Subtitle (Arabic)</label><input dir="rtl" data-k="subAr" value="'+esc(S.conf.subAr||"")+'"><label>Cover photo</label><input id="photo" type="file" accept="image/*">'+(S.conf.photo?'<button class="btn sm ghost" data-a="nophoto">Remove photo</button>':'')+'<div class="g2"><div><label>Number of days</label><input data-k="days" type="number" min="1" max="10" value="'+S.conf.days+'"></div></div></div><div class="card"><b>Teams</b>';
+S.teams.forEach(function(t){o+='<div class="tm"><input class="sw" type="color" data-t="'+t.id+'" data-f="color" value="'+t.color+'"><input data-t="'+t.id+'" data-f="name" value="'+esc(S.teams.filter(function(x){return x.id===t.id})[0].name)+'"><input data-t="'+t.id+'" data-f="nameAr" placeholder="Arabic name" dir="rtl" value="'+esc(t.nameAr||"")+'"><button class="btn sm ghost" data-a="delteam" data-v="'+t.id+'">✕</button></div>'});
+return o+'<button class="btn ghost sm" data-a="addteam">Add team</button></div><button class="btn ghost" data-a="reset">Reset demo data</button>'}
+
+/* ---------- shell ---------- */
+function render(){render0();$("#app").insertAdjacentHTML("beforeend",'<button class="lang" data-a="lang">'+(lang==="ar"?"English":"العربية")+'</button>');applyLang()}
+function render0(){var a=$("#app");if(!ready){a.innerHTML='<div class="hero">'+cross()+'<h1>…</h1></div>';return}if(!me&&view!=="admin"){a.innerHTML=vReg()+'<div class="wrap"><p><button class="btn ghost sm" data-a="goadm">Coordinator login</button></p></div>';return}
+var v={home:vHome,sched:function(){return '<div class="bar">'+cross()+'<h2>Schedule</h2></div>'+vSched()},attend:function(){return '<div class="bar">'+cross()+'<h2>My attendance</h2></div>'+vAttend()},score:function(){return '<div class="bar">'+cross()+'<h2>Scores</h2></div>'+vScores()},admin:vAdmin}[view]();
+var t=[["home","⛪","Home"],["sched","🗓","Schedule"],["attend","✅","Attend"],["score","🏆","Scores"],["admin","⚙️","Admin"]];
+a.innerHTML=v+'<nav class="tabs">'+t.map(function(x){return '<button class="'+(view===x[0]?'on':'')+'" data-a="go" data-v="'+x[0]+'"><span>'+x[1]+'</span>'+x[2]+'</button>'}).join("")+'</nav>'}
+function checkin(code){var p=code.split("|");if(p.length<2)return toast("Not a valid code");
+var pid=p[0].toUpperCase(),eid=p[1]||S.conf.live,e=ev(eid);if(!e)return toast("Session not found");
+if(p[2]&&!S.people[pid]){S.people[pid]={id:pid,name:dec(p[2]),team:p[3]};DB.setPerson(S.people[pid]).catch(function(){})}if(!S.people[pid])return toast("Unknown attendee code");
+if(S.att.some(function(a){return a.p===pid&&a.e===eid}))return toast(S.people[pid].name+" is already checked in");
+var at={p:pid,e:eid,t:Date.now()};S.att.push(at);DB.addAtt(at).catch(function(){toast("Could not save: sign in again")});toast("✅ "+S.people[pid].name+" checked in");var c=$("#cnt");if(c)c.textContent=S.att.filter(function(a){return a.e===eid}).length}
+function stopScan(){if(scanner){try{scanner.stop().catch(function(){})}catch(e){}scanner=null}}
+var A={lang:function(){lang=lang==="ar"?"en":"ar";try{localStorage.setItem("coptic-conf-lang",lang)}catch(e){}render()},
+go:function(v){stopScan();view=v;render();scrollTo(0,0)},goadm:function(){view="admin";render()},day:function(v){day=+v;render()},sub:function(v){stopScan();sub=v;edit=null;render()},
+perm:function(){try{Notification.requestPermission().then(render)}catch(e){}},
+reg:function(){var n=$("#rn").value.trim();if(!n)return toast("Please enter your name");me={id:uid("").toUpperCase().slice(0,4),name:n,team:$("#rt").value};saveMe();DB.setPerson({id:me.id,name:me.name,team:me.team}).catch(function(){});render()},
+login:function(){DB.login($("#em").value.trim(),$("#pw").value).catch(function(){toast("Wrong email or password")})},logout:function(){stopScan();DB.logout()},
+saveev:function(){var t=$("#f_t").value.trim();if(!t)return toast("Add a title");var o={day:+$("#f_day").value||1,start:$("#f_s").value,end:$("#f_e").value,title:t,loc:$("#f_loc").value,titleAr:$("#f_ta").value,locAr:$("#f_la").value};
+if(edit){Object.assign(ev(edit),o);edit=null}else S.events.push(Object.assign({id:uid("e")},o));save();toast("Saved")},
+ed:function(v){edit=v;render();scrollTo(0,0)},canc:function(){edit=null;render()},
+del:function(v){if(!confirm(tr("Delete this session?")))return;S.events=S.events.filter(function(e){return e.id!==v});if(S.conf.live===v)S.conf.live="";save()},
+live:function(v){S.conf.live=S.conf.live===v?"":v;save()},
+addpts:function(){var p=+$("#p_p").value;if(!p)return toast("Enter points");S.scores.push({id:uid("s"),team:$("#p_t").value,ev:$("#p_e").value,pts:p});save();toast("Points added")},
+delpts:function(v){S.scores=S.scores.filter(function(s){return s.id!==v});save()},
+send:function(){var t=$("#n_t").value.trim(),m=$("#n_m").value.trim();if(!t)return toast("Add a title");S.news.unshift({id:uid("n"),title:t,msg:m,titleAr:$("#n_ta").value.trim(),msgAr:$("#n_ma").value.trim(),t:Date.now()});save();toast("Alert sent")},
+deln:function(v){S.news=S.news.filter(function(n){return n.id!==v});save()},
+scan:function(){if(scanner){stopScan();return render()}
+try{scanner=new Html5Qrcode("reader");scanner.start({facingMode:"environment"},{fps:10,qrbox:200},function(t){checkin(t)},function(){}).catch(function(){scanner=null;toast("Camera unavailable. Use the code box instead.")});$("[data-a=scan]").textContent=tr("Stop scanner")}catch(e){scanner=null;toast("Scanner not available here")}},
+manual:function(){var c=$("#mc").value.trim().toUpperCase();if(c)checkin(c+"|"+S.conf.live)},
+nophoto:function(){S.conf.photo="";save()},
+addteam:function(){S.teams.push({id:uid("t"),name:"New team",color:"#7a4fb5"});save()},
+delteam:function(v){if(S.teams.length<2)return toast("Keep at least one team");S.teams=S.teams.filter(function(t){return t.id!==v});S.scores=S.scores.filter(function(s){return s.team!==v});save()},
+reset:function(){if(confirm(tr("Reset everything to the demo data?"))){S=def();save()}}};
+document.addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset.v)});
+document.addEventListener("change",function(e){var t=e.target;
+if(t.dataset.k){var v=t.type==="number"?Math.max(1,+t.value||1):t.value;S.conf[t.dataset.k]=v;save()}
+else if(t.dataset.t){var tm=S.teams.filter(function(x){return x.id===t.dataset.t})[0];tm[t.dataset.f]=t.value;save()}
+else if(t.id==="photo"&&t.files[0]){var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement("canvas"),k=Math.min(1,900/im.width);c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);S.conf.photo=c.toDataURL("image/jpeg",.7);save()};im.src=r.result};r.readAsDataURL(t.files[0])}});
+var ready=false,noCfg=false,unsubs=[],myW="",myU=null;
+function watchMy(){var k=(me&&!adm&&S.conf.live)?me.id+"_"+S.conf.live:"";if(k===myW)return;if(myU){myU();myU=null}myW=k;S.att=[];if(k)myU=DB.myAtt(k,function(ex){S.att=ex?[{p:me.id,e:S.conf.live}]:[];render()})}
+window.boot=function(){
+DB.cfg(function(c){var old=S.news.length,first=!ready;if(c){Object.assign(S,c);noCfg=false}else noCfg=true;ready=true;watchMy();if(c&&!first&&!adm&&c.news.length>old)notify(c.news[0]);if(!scanner)render();if(noCfg&&adm)save()});
+DB.auth(function(u){adm=!!u;unsubs.forEach(function(f){f()});unsubs=[];if(u){unsubs=[DB.people(function(l){S.people={};l.forEach(function(p){S.people[p.id]=p})}),DB.att(function(l){S.att=l;if(!scanner)render()})];if(noCfg)save()}watchMy();render()});
+setTimeout(function(){if(!ready){ready=true;render()}},4000)};
+load();render();
+</script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import {getFirestore,doc,collection,setDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+const app=initializeApp({apiKey:"AIzaSyAe8Qk-fKRQCDJiOJqbdkt5YVndGhuiw-A",authDomain:"winter-conference-2027.firebaseapp.com",projectId:"winter-conference-2027",storageBucket:"winter-conference-2027.firebasestorage.app",messagingSenderId:"1072747333083",appId:"1:1072747333083:web:dfd3cc8a3657dcbef393fe"});
+const db=getFirestore(app),auth=getAuth(app),er=e=>console.log(e);
+window.DB={
+cfg:f=>onSnapshot(doc(db,"app","config"),s=>f(s.exists()?s.data():null),er),
+myAtt:(id,f)=>onSnapshot(doc(db,"att",id),s=>f(s.exists()),er),
+people:f=>onSnapshot(collection(db,"people"),s=>f(s.docs.map(d=>d.data())),er),
+att:f=>onSnapshot(collection(db,"att"),s=>f(s.docs.map(d=>d.data())),er),
+setCfg:d=>setDoc(doc(db,"app","config"),d),
+setPerson:p=>setDoc(doc(db,"people",p.id),p),
+addAtt:a=>setDoc(doc(db,"att",a.p+"_"+a.e),a),
+login:(e,p)=>signInWithEmailAndPassword(auth,e,p),logout:()=>signOut(auth),
+auth:f=>onAuthStateChanged(auth,f)};
+window.boot();
+</script></body></html>
